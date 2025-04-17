@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package RumahSakit;
+package Bab1_ManajemenRumahSakit;
 
 /**
  *
@@ -19,9 +19,21 @@ public class Main {
 
         // Daftar dokter
         List<Dokter> daftarDokter = new ArrayList<>();
-        daftarDokter.add(new Dokter("Dr. Budi", "Jantung"));
-        daftarDokter.add(new Dokter("Dr. Ani", "Mata"));
-        daftarDokter.add(new Dokter("Dr. Dika", "Anak"));
+        Dokter d1 = new Dokter(); d1.dataDokter("Dr. Budi - Jantung");
+        Dokter d2 = new Dokter(); d2.dataDokter("Dr. Ani - Mata");
+        Dokter d3 = new Dokter(); d3.dataDokter("Dr. Dika - Anak");
+        daftarDokter.add(d1);
+        daftarDokter.add(d2);
+        daftarDokter.add(d3);
+        
+        // Daftar Metode Pembayaran
+        List<MetodePembayaran> daftarMetodePembayaran = new ArrayList<>();
+        MetodePembayaran mp1 = new MetodePembayaran(); mp1.dataMetodePembayaran("Transfer");
+        MetodePembayaran mp2 = new MetodePembayaran(); mp2.dataMetodePembayaran("Tunai");
+        MetodePembayaran mp3 = new MetodePembayaran(); mp3.dataMetodePembayaran("Kartu Kredit");
+        daftarMetodePembayaran.add(mp1);
+        daftarMetodePembayaran.add(mp2);
+        daftarMetodePembayaran.add(mp3);
 
         while (true) {
             System.out.println("\n=== SISTEM REKAM MEDIS ===");
@@ -36,27 +48,26 @@ public class Main {
             switch (pilihan) {
                 case 1:
                     // Input Data Pasien
+                    Pasien pasien = new Pasien();
                     System.out.print("Nama Pasien: ");
-                    String nama = input.nextLine();
+                    pasien.dataNama(input.nextLine());
                     System.out.print("Umur: ");
-                    int umur = input.nextInt();
+                    pasien.dataUmur(input.nextInt());
                     input.nextLine(); // Clear buffer
 
                     // Pilih Dokter
                     System.out.println("Pilih Dokter:");
                     for (int i = 0; i < daftarDokter.size(); i++) {
-                        System.out.println((i + 1) + ". " + daftarDokter.get(i));
+                        System.out.println((i + 1) + ". " + daftarDokter.get(i).cetakDokter());
                     }
                     System.out.print("Dokter: ");
                     int dokterIndex = input.nextInt() - 1;
                     input.nextLine(); // Clear buffer
-                    Dokter dokter = daftarDokter.get(dokterIndex);
+                    pasien.dataDokter(daftarDokter.get(dokterIndex));
 
                     System.out.print("Diagnosis: ");
-                    String diagnosis = input.nextLine();
+                    pasien.dataDiagnosis(input.nextLine());
 
-                    // Simpan ke rekam medis
-                    Pasien pasien = new Pasien(nama, umur, dokter, diagnosis);
                     rekamMedis.tambahPasien(pasien);
                     System.out.println("✅ Data pasien berhasil disimpan!");
                     break;
@@ -72,9 +83,9 @@ public class Main {
                     } else {
                         for (int i = 0; i < pasienList.size(); i++) {
                             Pasien p = pasienList.get(i);
-                            System.out.println((i + 1) + ". " + p.getNama() + " | " +
-                                    p.getUmur() + " | " + p.getDokter().getNama() + " | " +
-                                    p.getDiagnosis() + " | " + statusList.get(i));
+                            System.out.println((i + 1) + ". " + p.cetakNama() + " | " +
+                                    p.cetakUmur() + " | " + p.cetakDokter().cetakDokter() + " | " +
+                                    p.cetakDiagnosis() + " | " + statusList.get(i));
                         }
                     }
                     break;
@@ -82,9 +93,15 @@ public class Main {
                 case 3:
                     // Proses Pembayaran
                     System.out.println("\n=== PEMBAYARAN ===");
+                    List<Pasien> daftar = rekamMedis.getDaftarPasien();
+                    if (daftar.isEmpty()) {
+                        System.out.println("Belum ada pasien.");
+                        break;
+                    }
+
                     System.out.println("Pilih pasien untuk membayar:");
-                    for (int i = 0; i < rekamMedis.getDaftarPasien().size(); i++) {
-                        System.out.println((i + 1) + ". " + rekamMedis.getDaftarPasien().get(i).getNama());
+                    for (int i = 0; i < daftar.size(); i++) {
+                        System.out.println((i + 1) + ". " + daftar.get(i).cetakNama());
                     }
                     System.out.print("Pasien: ");
                     int pasienIndex = input.nextInt() - 1;
@@ -92,22 +109,21 @@ public class Main {
 
                     // Pilih metode pembayaran
                     System.out.println("Pilih Metode Pembayaran:");
-                    MetodePembayaran[] metode = MetodePembayaran.values();
-                    for (int i = 0; i < metode.length; i++) {
-                        System.out.println((i + 1) + ". " + metode[i]);
+                    for (int i = 0; i < daftarMetodePembayaran.size(); i++) {
+                        System.out.println((i + 1) + ". " + daftarMetodePembayaran.get(i).cetakMetodePembayaran());
                     }
                     System.out.print("Metode: ");
                     int metodeIndex = input.nextInt() - 1;
                     input.nextLine(); // Clear buffer
 
-                    MetodePembayaran metodeBayar = metode[metodeIndex];
-                    Pasien pasienBayar = rekamMedis.getDaftarPasien().get(pasienIndex);
+                    MetodePembayaran metodeTerpilih = daftarMetodePembayaran.get(metodeIndex);
+                    Pasien pasienBayar = daftar.get(pasienIndex);
 
                     // Konfirmasi Pembayaran
                     System.out.println("\nKonfirmasi Pembayaran");
-                    System.out.println("Nama: " + pasienBayar.getNama());
+                    System.out.println("Nama: " + pasienBayar.cetakNama());
                     System.out.println("Total: Rp 500.000");
-                    System.out.println("Metode: " + metodeBayar);
+                    System.out.println("Metode: " + metodeTerpilih.cetakMetodePembayaran());
                     System.out.print("Lanjutkan pembayaran? (y/n): ");
                     String konfirmasi = input.nextLine();
 
