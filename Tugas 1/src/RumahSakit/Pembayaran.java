@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package RumahSakit;
+package Bab1_ManajemenRumahSakit;
 
 /**
  *
@@ -10,17 +10,56 @@ package RumahSakit;
  */
 import javax.swing.JOptionPane;
 
-import javax.swing.JOptionPane;
+class Pembayaran {
+    String status = "Belum Lunas";
+    int totalBiaya = 0;
+    MetodePembayaran metode;
 
-public class Pembayaran {
-    public static boolean konfirmasiBayar(Pasien pasien, MetodePembayaran metode) {
-        // Menampilkan popup konfirmasi pembayaran
-        int confirm = JOptionPane.showConfirmDialog(null, 
-                "Nama Pasien: " + pasien.getNama() + 
-                "\nTotal Bayar: Rp 500.000\nMetode: " + metode,
-                "Konfirmasi Pembayaran", 
+    void setMetode(MetodePembayaran m) {
+        metode = m;
+    }
+
+    MetodePembayaran getMetode() {
+        return metode;
+    }
+
+    void setStatus(String s) {
+        status = s;
+    }
+
+    String getStatus() {
+        return status;
+    }
+
+    void setTotalBiaya(int biaya) {
+        totalBiaya = biaya;
+    }
+
+    int getTotalBiaya() {
+        return totalBiaya;
+    }
+
+    boolean konfirmasiBayar(Pasien pasien) {
+        int confirm = JOptionPane.showConfirmDialog(null,
+                "Nama Pasien: " + pasien.cetakNama() +
+                "\nTotal Bayar: Rp " + totalBiaya +
+                "\nMetode: " + metode.toString(),
+                "Konfirmasi Pembayaran",
                 JOptionPane.YES_NO_OPTION);
 
-        return confirm == JOptionPane.YES_OPTION; // TRUE jika user pilih "YA"
+        if (confirm == JOptionPane.YES_OPTION) {
+            status = "Lunas";
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    String cetakPembayaran() {
+        return "Rp " + totalBiaya;
+    }
+
+    String cetakStatus() {
+        return status;
     }
 }
